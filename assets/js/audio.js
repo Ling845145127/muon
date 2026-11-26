@@ -12,6 +12,7 @@
      MuonAudio.glitch(0.6)     故障雜訊（秒數）
      MuonAudio.beep()          遠方的逼逼聲
      MuonAudio.crt()           電視開機聲
+     MuonAudio.staticRise(2)   越來越大的雜訊，回傳的物件呼叫 .cut() 會瞬間切斷
    靜音時呼叫也沒關係，會自動不出聲
    ========================================================= */
 
@@ -334,6 +335,38 @@ const MuonAudio = (() => {
         whine.stop(t + 2);
     }
 
+    // 越來越大的雜訊（電視沙沙聲），回傳 cut()：呼叫時聲音瞬間切斷
+    function staticRise(duration = 2) {
+        const silent = { cut() {} };
+        if (!enabled || !ctx || ctx.state !== 'running') return silent;
+        const t = ctx.currentTime;
+
+        const src = ctx.createBufferSource();
+        src.buffer = makeWhiteNoise(duration + 1);
+        const band = ctx.createBiquadFilter();
+        band.type = 'bandpass';
+        band.frequency.setValueAtTime(800, t);
+        band.frequency.exponentialRampToValueAtTime(4000, t + duration);
+        band.Q.value = 0.5;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.35, t + duration);
+        src.connect(band).connect(g).connect(master);
+        src.start(t);
+
+        return {
+            cut() {
+                // 雜訊和背景音一起瞬間切掉，像電源被拔掉
+                const now = ctx.currentTime;
+                g.gain.cancelScheduledValues(now);
+                g.gain.setValueAtTime(0, now);
+                master.gain.cancelScheduledValues(now);
+                master.gain.setValueAtTime(0, now);
+                src.stop(now + 0.05);
+            },
+        };
+    }
+
     /* ---------- 開／關 ---------- */
 
     function fadeTo(value, time) {
@@ -420,5 +453,5 @@ const MuonAudio = (() => {
         if (enabled && ctx && ctx.state === 'running') beepPattern(master);
     }
 
-    return { tick, glitch, beep, crt, isOn: () => enabled };
+    return { tick, glitch, beep, crt, staticRise, isOn: () => enabled };
 })();

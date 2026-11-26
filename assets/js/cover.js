@@ -338,10 +338,13 @@ async function speak(line) {
     if (!interrupted) await wait(SPEED.gap);
 }
 
+let monologueStopped = false;   // 按下開始連線後，獨白就停止
+
 async function monologue() {
     let line = { text: pick(hasSave ? MUON_LINES.returning : MUON_LINES.greeting) };
-    while (true) {
+    while (!monologueStopped) {
         await speak(line);
+        if (monologueStopped) break;
         if (pendingLine) {
             line = pendingLine;
             pendingLine = null;
@@ -528,16 +531,90 @@ if (!REDUCE_MOTION) {
     setInterval(() => { if (Math.random() < 0.35) glitchTitle(); }, 2500);
 }
 
+/* 開始連線的轉場
+   1. 無音停下獨白，打出「開始連線。」
+   2. 畫面慢慢被雜訊（電視沙沙畫面）蓋過，聲音也越來越大
+   3. 雜訊最滿的時候，畫面和聲音「啪」一聲同時切掉
+   4. 全黑一下，跳到遊戲頁（遊戲頁也是從全黑開始，接起來就像同一個畫面） */
+
+const staticCanvas = document.getElementById('static');
+const sctx = staticCanvas.getContext('2d');
+let leaving = false;
+
+function drawStatic(amount) {
+    // 低解析度的隨機灰點，amount（0～1）越大，畫面越亮、越不透明
+    const W = 160;
+    const H = Math.max(90, Math.round(W * innerHeight / innerWidth));
+    if (staticCanvas.width !== W) { staticCanvas.width = W; staticCanvas.height = H; }
+    const img = sctx.createImageData(W, H);
+    const d = img.data;
+    // 偶爾整排變亮，像訊號撕裂
+    const tearY = Math.random() < amount ? Math.floor(Math.random() * H) : -1;
+    for (let y = 0; y < H; y++) {
+        const tear = Math.abs(y - tearY) < 2 ? 60 : 0;
+        for (let x = 0; x < W; x++) {
+            const v = Math.min(255, Math.random() * 255 * (0.35 + amount * 0.65) + tear);
+            const o = (y * W + x) * 4;
+            d[o] = v * 0.85; d[o + 1] = v; d[o + 2] = v * 0.97;   // 帶一點點青色
+            d[o + 3] = 255;
+        }
+    }
+    sctx.putImageData(img, 0, 0);
+    staticCanvas.style.opacity = Math.min(1, amount * 1.1);
+}
+
+async function startConnection(href, text) {
+    if (leaving) return;
+    leaving = true;
+    document.querySelectorAll('.actions .btn').forEach(b => b.classList.add('disabled'));
+
+    // 1. 停下獨白，等目前這句快速刪完，再打出「開始連線。」
+    monologueStopped = true;
+    interrupted = true;
+    pendingLine = null;
+    await sleep(450);
+    for (let i = 1; i <= text.length; i++) {
+        show(text.slice(0, i));
+        if (text[i - 1] !== '。') MuonAudio.tick();
+        await sleep(text[i - 1] === '。' ? 400 : 160);
+    }
+    await sleep(700);
+
+    // 2. 雜訊慢慢蓋過畫面（約 2.2 秒）
+    const noise = MuonAudio.staticRise(2.2);
+    staticCanvas.style.display = 'block';
+    const DURATION = 2200;
+    const start = performance.now();
+    await new Promise(resolve => {
+        function frame(now) {
+            const t = Math.min(1, (now - start) / DURATION);
+            drawStatic(t * t);                         // 一開始很淡，後面越來越快變滿
+            if (t > 0.5 && Math.random() < 0.15) glitchTitle(80);
+            if (t < 1) requestAnimationFrame(frame);
+            else resolve();
+        }
+        requestAnimationFrame(frame);
+    });
+
+    // 3. 啪！同時切掉畫面和聲音
+    const black = document.getElementById('glitch');
+    black.style.animation = 'none';
+    black.style.opacity = '1';
+    staticCanvas.style.display = 'none';
+    noise.cut();
+
+    // 4. 全黑一下再換頁
+    await sleep(350);
+    window.location.href = href;
+}
+
 document.querySelectorAll('.actions .btn').forEach(btn => {
     btn.addEventListener('click', e => {
-        if (REDUCE_MOTION || e.ctrlKey || e.metaKey) return;   // 用新分頁開啟時就不播轉場
+        if (e.ctrlKey || e.metaKey) return;               // 用新分頁開啟時就不播轉場
+        if (REDUCE_MOTION) return;                        // 減少動態效果：直接換頁
         e.preventDefault();
-        const href = btn.getAttribute('href');
-        glitchTitle(900);
-        MuonAudio.glitch(0.9);                                // 轉場雜訊
-        document.body.classList.add('shaking');
-        document.getElementById('glitch').classList.add('active');
-        setTimeout(() => { window.location.href = href; }, 950);
+        const isContinue = btn.id === 'btn-continue';
+        startConnection(btn.getAttribute('href'), isContinue ? '恢復連線。' : '開始連線。');
     });
 });
 
