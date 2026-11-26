@@ -1,0 +1,309 @@
+/* =========================================================
+   遊戲本體 game.css
+   沿用 style.css 的字級、字型、顏色變數
+   --term 是終端機文字用的淺青綠色（和主色同一個色相，只是比較亮）
+   ========================================================= */
+
+body.game {
+    --term: #7fe0d6;
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* 掃描線疊在整個遊戲畫面上 */
+body.game::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.22) 3px);
+}
+
+/* ---------- 右上角控制 ---------- */
+
+.game-controls {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.exit-link {
+    color: var(--ink-dim);
+    text-decoration: none;
+    transition: color .2s;
+}
+.exit-link:hover { color: var(--warn); }
+
+/* ---------- 階段一：終端機 ---------- */
+
+.terminal {
+    position: fixed;
+    inset: 0;
+    padding: 64px 8vw 48px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-m);
+    line-height: 1.5;
+    color: var(--term);
+    text-shadow: 0 0 6px rgba(127, 224, 214, .45);
+    cursor: default;
+}
+.term-output { white-space: pre-wrap; }
+.term-output .dim  { color: var(--teal-dim); text-shadow: none; }
+.term-output .warn { color: var(--warn); text-shadow: 0 0 6px rgba(208, 96, 90, .45); }
+.term-output .ok   { color: var(--ink); }
+
+.term-input-line {
+    display: flex;
+    align-items: center;
+}
+.term-input-line[hidden] { display: none; }
+/* 真正的輸入框藏起來，畫面上顯示星號，比較像終端機 */
+.term-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+.term-cursor {
+    display: inline-block;
+    width: .55em;
+    height: 1em;
+    background: var(--term);
+    animation: blink 1s steps(1) infinite;
+}
+
+.term-hint {
+    position: fixed;
+    left: 8vw;
+    bottom: 20px;
+    color: var(--teal-dim);
+    text-shadow: none;
+}
+
+.terminal.fade-out { animation: term-off .5s steps(5) forwards; }
+@keyframes term-off {
+    0%   { opacity: 1; filter: none; }
+    40%  { opacity: .7; transform: translateX(-6px); }
+    60%  { opacity: .9; transform: translateX(4px); }
+    100% { opacity: 0; transform: none; }
+}
+
+/* ---------- 電視開機的十字白光 ---------- */
+
+.crt {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    pointer-events: none;
+    image-rendering: pixelated;
+    display: none;
+}
+
+/* ---------- 階段三：桌面 ---------- */
+
+.desktop {
+    position: fixed;
+    inset: 0;
+    font-family: var(--font-main);
+    color: var(--ink);
+}
+.desktop[hidden] { display: none; }
+
+/* 桌布：深色漸層＋細小網點，模擬點陣 */
+.wallpaper {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle, rgba(63,191,174,.16) 1px, transparent 1.2px) 0 0 / 4px 4px,
+        radial-gradient(ellipse at 60% 40%, #10302d 0%, #0a1615 55%, #050909 100%);
+}
+.wall-logo {
+    font-size: var(--fs-l);
+    letter-spacing: .4em;
+    color: rgba(63, 191, 174, .28);
+}
+.wall-sub {
+    color: rgba(63, 191, 174, .22);
+    letter-spacing: .2em;
+}
+
+.icons {
+    position: absolute;
+    top: 20px;
+    left: 16px;
+    bottom: 56px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(auto-fill, 96px);
+    grid-auto-columns: 92px;
+    gap: 6px 10px;
+}
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 4px;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--ink);
+    font-family: var(--font-main);
+    font-size: var(--fs-s);
+    line-height: 1.3;
+    text-align: center;
+    cursor: pointer;
+}
+.icon svg {
+    width: 40px;
+    height: 40px;
+    shape-rendering: crispEdges;   /* 保持像素邊緣銳利 */
+}
+.icon span { text-shadow: 0 1px 2px #000; word-break: break-all; }
+.icon:hover { background: rgba(63, 191, 174, .08); }
+.icon.selected {
+    background: rgba(63, 191, 174, .18);
+    border-color: var(--teal-dim);
+}
+.icon:focus-visible { outline: 1px dashed var(--ink); }
+
+/* 視窗：位置由 game.js 決定（left / top），可以同時開好幾個 */
+.window {
+    position: absolute;
+    background: #0b1312;
+    border: 1px solid var(--line);
+    box-shadow: 0 12px 40px rgba(0,0,0,.6);
+    animation: win-open .18s steps(3);
+}
+.window.active { border-color: var(--teal); }
+@keyframes win-open {
+    from { transform: scale(.92); opacity: 0; }
+}
+.win-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 6px 6px 12px;
+    background: #1a2423;                 /* 沒在使用的視窗：標題列偏灰 */
+    color: var(--ink-dim);
+    cursor: grab;
+    user-select: none;
+    touch-action: none;                  /* 手機上拖曳時不要捲動畫面 */
+}
+.window.active .win-bar { background: var(--teal-dim); color: var(--ink); }
+.window.dragging .win-bar { cursor: grabbing; }
+.window.dragging { opacity: .92; }
+.win-title { font-size: var(--fs-s); }
+.win-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: 1px solid var(--ink-dim);
+    color: var(--ink);
+    font-size: var(--fs-s);
+    cursor: pointer;
+}
+.win-close:hover { background: var(--warn); border-color: var(--warn); }
+.win-body {
+    padding: 20px;
+    font-size: var(--fs-s);
+    line-height: 1.9;
+    white-space: pre-wrap;
+}
+.win-body.mono { font-size: var(--fs-m); line-height: 1.5; }
+.win-action {
+    margin-top: 16px;
+    padding: 4px 16px;
+    background: none;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-family: var(--font-main);
+    font-size: var(--fs-s);
+    cursor: pointer;
+}
+.win-action:hover { background: var(--teal-dim); color: var(--ink); }
+
+/* 工作列 */
+.taskbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 12px;
+    background: rgba(8, 12, 13, .95);
+    border-top: 1px solid var(--line);
+}
+.start-btn {
+    height: 30px;
+    padding: 0 12px;
+    background: var(--teal-dim);
+    border: 1px solid var(--teal);
+    color: var(--ink);
+    font-size: var(--fs-s);
+    cursor: pointer;
+}
+.task-user { color: var(--ink-dim); }
+
+/* 工作列上開著的視窗 */
+.task-windows {
+    display: flex;
+    gap: 6px;
+    overflow: hidden;
+    min-width: 0;
+}
+.task-win {
+    max-width: 140px;
+    height: 30px;
+    padding: 0 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-family: var(--font-main);
+    font-size: var(--fs-s);
+    cursor: pointer;
+}
+.task-win.active { border-color: var(--teal); color: var(--ink); background: rgba(63,191,174,.12); }
+.task-right {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+    color: var(--ink-dim);
+}
+.warn-text { color: var(--warn); }
+
+/* 桌面出現時，從暗到亮 */
+.desktop.power-on { animation: desk-on .6s ease-out; }
+@keyframes desk-on {
+    from { filter: brightness(2.2) contrast(1.4); }
+    to   { filter: none; }
+}
+
+@media (max-width: 600px) {
+    .terminal { padding: 64px 20px 48px; }
+    .term-hint { left: 20px; }
+    .task-user { display: none; }
+    .wall-logo { letter-spacing: .2em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .term-cursor { animation: none; }
+    .terminal.fade-out, .window, .desktop.power-on { animation: none; }
+}

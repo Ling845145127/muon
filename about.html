@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於 ｜ 無音</title>
+    <meta name="description" content="關於 MUON-07 ／ 無音：一個模擬 ARG 的網頁解謎遊戲。">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 fill=%27%230a0d0f%27/%3E%3Crect x=%274%27 y=%274%27 width=%278%27 height=%278%27 fill=%27none%27 stroke=%27%233fbfae%27 stroke-width=%272%27/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <header class="site-header solid">
+        <a href="index.html" class="logo mono">MUON-07</a>
+        <nav class="site-nav" aria-label="主選單">
+            <a href="index.html">首頁</a>
+            <a href="guide.html">操作方式</a>
+            <a href="records.html">紀錄</a>
+            <a href="about.html" class="active" aria-current="page">關於</a>
+        </nav>
+        <div class="header-right">
+            <span class="mono header-status">
+                <span id="signal">訊號 ▂▄▁▁</span>
+                <span>電力 <span id="power">12</span>%</span>
+            </span>
+            <button type="button" class="sound-toggle" aria-pressed="false" aria-label="開啟聲音">
+                <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <span class="sound-label mono">聲音 關</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="container">
+
+            <!-- 頁首 -->
+            <p class="mono label">ABOUT ／ 關於</p>
+            <h1 class="section-title">關於 MUON-07 ／ 無音</h1>
+            <p class="lead">
+                一座被遺棄在太平洋海底的探勘站，一個還在等人回來的 AI。<br>
+                這是一個以網頁呈現的模擬 ARG 解謎遊戲。
+            </p>
+
+            <div class="about-layout">
+
+                <!-- 左側目錄：捲動時會跟著亮起目前的段落 -->
+                <nav class="toc" aria-label="本頁目錄">
+                    <p class="mono small toc-title">INDEX</p>
+                    <a href="#what">01　網站定位</a>
+                    <a href="#concept">02　創作理念</a>
+                    <a href="#features">03　遊戲特色</a>
+                    <a href="#inspiration">04　靈感來源</a>
+                    <a href="#tech">05　使用技術</a>
+                    <a href="#credits">06　素材與授權</a>
+                    <a href="#author">07　製作者</a>
+                </nav>
+
+                <div class="about-content">
+
+                    <!-- 01 網站定位 -->
+                    <section id="what" class="about-section">
+                        <h2 class="about-heading"><span class="mono">01</span>網站定位</h2>
+                        <p>
+                            《無音》是一個<strong>模擬 ARG 的網頁解謎遊戲</strong>。玩家扮演一個意外連上海底探勘站伺服器的外部連線者，透過閱讀文件、翻找聊天紀錄、調閱監視器，一步步拼湊出基地全員撤離的真相。
+                        </p>
+                        <aside class="note">
+                            <p class="mono small note-title">什麼是 ARG？</p>
+                            <p>
+                                ARG（Alternate Reality Game，替代實境遊戲）會把虛構的故事包裝成「看起來像真的」的形式，例如一個真的能登入的網站、一份真的能打開的文件。玩家不是在操作遊戲角色，而是自己動手調查。《無音》借用了這種體驗：整個遊戲就是一台還在運作的基地電腦，你看到的每一份資料，都是故事的一部分。
+                            </p>
+                        </aside>
+                        <ul class="tags">
+                            <li>解謎</li><li>懸疑</li><li>科幻</li><li>深海</li><li>AI</li>
+                        </ul>
+                    </section>
+
+                    <!-- 02 創作理念（待使用者補上） -->
+                    <section id="concept" class="about-section">
+                        <h2 class="about-heading"><span class="mono">02</span>創作理念</h2>
+                        <p>
+                            某天，我在 YouTube 上意外點進一部沒有標題的影片。畫面裡只有不斷重複的幾何動畫，配上零碎卻耐人尋味的歌詞，整部影片幾乎沒有多餘的資訊，反而充滿了神秘感。
+                        </p>
+                        <p>
+                            我被它的畫面和音樂深深吸引，反覆重看時，腦中浮現了一個畫面：一座沉在深海裡、早已無人的基地，和一個仍在獨自運作的 AI。這次作業，我想試著把這個畫面實現出來。
+                        </p>
+                        <p class="highlight">
+                            在構思故事的過程中，我也加入了自己對現實的一點觀察：很多時候，讓事情失控的不是災難本身，而是一則沒有人查證的謠言。所以在《無音》裡，玩家要做的不是逃離危機，而是閱讀資料、找出矛盾，親手拼出被謠言掩蓋的真相。
+                        </p>
+                    </section>
+
+                    <!-- 03 遊戲特色 -->
+                    <section id="features" class="about-section">
+                        <h2 class="about-heading"><span class="mono">03</span>遊戲特色</h2>
+                        <div class="feature-grid">
+                            <article class="card">
+                                <h3 class="card-title mono">INVESTIGATE ／ 調查</h3>
+                                <p>沒有戰鬥、沒有操作角色。你能做的只有讀、看、比對，在研究員的日誌、聊天紀錄與維修數據之間找出矛盾。</p>
+                            </article>
+                            <article class="card">
+                                <h3 class="card-title mono">MUON-07 ／ 中央 AI</h3>
+                                <p>基地的中央系統「無音」仍在運作。一開始她會阻擋入侵者；取得權限後，她會協助你解密檔案、開啟上鎖的資料。</p>
+                            </article>
+                            <article class="card">
+                                <h3 class="card-title mono">TERMINAL ／ 終端機</h3>
+                                <p>用簡單的指令操作基地電腦。不需要任何程式基礎，系統會告訴你有哪些指令可以用。</p>
+                            </article>
+                            <article class="card">
+                                <h3 class="card-title mono">SAVE ／ 自動存檔</h3>
+                                <p>遊玩時間約 15–30 分鐘，進度會自動保存。下次回來，可以從首頁直接繼續。</p>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- 04 靈感來源 -->
+                    <section id="inspiration" class="about-section">
+                        <h2 class="about-heading"><span class="mono">04</span>靈感來源</h2>
+                        <p>本網站的氛圍靈感來自 YouTube 上的影片〈海底〉，以及它所呈現的深海、寂靜與點陣畫面。</p>
+                        <a class="source-card" href="https://youtu.be/KjIzJZGrz1c" target="_blank" rel="noopener">
+                            <img class="source-thumb" src="https://i.ytimg.com/vi/KjIzJZGrz1c/hqdefault.jpg" alt="影片〈海底〉的封面" loading="lazy">
+                            <span class="source-text">
+                                <span class="mono small source-tag">YOUTUBE</span>
+                                <span>〈海底〉</span>
+                                <span class="mono small muted">↗ 前往影片（另開新視窗）</span>
+                            </span>
+                        </a>
+                        <p class="muted small">影片封面版權屬於原作者，此處僅用於標示靈感來源。</p>
+                        <p class="muted">本網站借用的只有作品給人的氛圍。網站的故事、角色、謎題、圖片與程式皆為原創製作；除了上方標示出處用的影片封面，未使用該作品的音樂、歌詞或畫面。</p>
+                    </section>
+
+                    <!-- 05 使用技術 -->
+                    <section id="tech" class="about-section">
+                        <h2 class="about-heading"><span class="mono">05</span>使用技術</h2>
+                        <div class="tech-grid">
+                            <article class="card">
+                                <h3 class="card-title mono">FRONT-END ／ 前端</h3>
+                                <p class="muted small">使用者在瀏覽器上看到、操作的部分</p>
+                                <dl class="tech-list">
+                                    <div><dt>HTML / CSS / JavaScript</dt><dd>網站結構、版面與所有互動</dd></div>
+                                    <div><dt>Canvas</dt><dd>首頁的點陣走廊、聲納圖、電力變化圖，全部用程式即時繪製</dd></div>
+                                    <div><dt>localStorage</dt><dd>在玩家自己的瀏覽器記錄遊戲進度與連線次數</dd></div>
+                                    <div><dt>響應式設計</dt><dd>電腦、平板、手機都能瀏覽；支援「減少動態效果」設定</dd></div>
+                                </dl>
+                            </article>
+                            <article class="card">
+                                <h3 class="card-title mono">BACK-END ／ 後端</h3>
+                                <p class="muted small">存放在伺服器、所有玩家共用的部分</p>
+                                <dl class="tech-list">
+                                    <div><dt>資料庫</dt><dd>儲存「紀錄」頁的玩家留言與全站統計（製作中）</dd></div>
+                                    <div><dt>密碼驗證</dt><dd>謎題答案在伺服器端檢查，避免直接從原始碼看到答案（規劃中）</dd></div>
+                                </dl>
+                            </article>
+                        </div>
+                        <div class="design-rule">
+                            <p class="mono small note-title">DESIGN RULES ／ 設計規範</p>
+                            <ul class="rule-list">
+                                <li><span class="mono">3</span>種字級</li>
+                                <li><span class="mono">2</span>種字型</li>
+                                <li><span class="mono">3</span>種色相</li>
+                                <li><span class="mono">2</span>種按鈕</li>
+                            </ul>
+                            <div class="swatches" aria-label="網站使用的顏色">
+                                <span class="swatch" style="background: var(--bg)"><span class="mono small">#0A0D0F</span></span>
+                                <span class="swatch" style="background: var(--ink)"><span class="mono small dark">#C8D0D2</span></span>
+                                <span class="swatch" style="background: var(--teal)"><span class="mono small dark">#3FBFAE</span></span>
+                                <span class="swatch" style="background: var(--warn)"><span class="mono small dark">#D0605A</span></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 06 素材與授權 -->
+                    <section id="credits" class="about-section">
+                        <h2 class="about-heading"><span class="mono">06</span>素材與授權</h2>
+                        <table class="credit-table">
+                            <thead>
+                                <tr><th scope="col">類別</th><th scope="col">名稱</th><th scope="col">來源與授權</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>字型</td><td>Noto Sans TC（思源黑體）</td><td>Google Fonts／SIL Open Font License</td></tr>
+                                <tr><td>字型</td><td>VT323</td><td>Google Fonts／SIL Open Font License</td></tr>
+                                <tr><td>場景</td><td>點陣走廊、聲納圖</td><td>程式繪製（原創）</td></tr>
+                                <tr><td>圖片</td><td>影片〈海底〉封面</td><td>YouTube／版權屬原作者，僅用於標示靈感來源</td></tr>
+                                <tr><td>照片</td><td>基地場景</td><td class="muted">作者拍攝，製作中</td></tr>
+                                <tr><td>圖示</td><td>—</td><td class="muted">待補</td></tr>
+                                <tr><td>音效</td><td>—</td><td class="muted">待補</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="muted small disclaimer">
+                            本網站為虛構作品。故事中的人物、機構（包含 IDOA）、座標與事件皆為虛構，與現實中的任何組織或人物無關。克拉里昂－克利珀頓區為真實存在的太平洋海域，僅作為故事背景使用。
+                        </p>
+                    </section>
+
+                    <!-- 07 製作者 -->
+                    <section id="author" class="about-section">
+                        <h2 class="about-heading"><span class="mono">07</span>製作者</h2>
+                        <dl class="info author-info">
+                            <div><dt>企劃・劇本・攝影</dt><dd>（你的名字）</dd></div>
+                            <div><dt>程式協作</dt><dd>Claude（Anthropic）</dd></div>
+                            <div><dt>課程</dt><dd>（課程名稱）期末作業</dd></div>
+                            <div><dt>製作期間</dt><dd class="mono">2026.11 — 2026.12</dd></div>
+                        </dl>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <span class="mono small">MUON-07 ／ 無音　—　網頁設計期末作業</span>
+    </footer>
+
+    <script src="assets/js/audio.js"></script>
+    <script src="assets/js/site.js"></script>
+    <script src="assets/js/about.js"></script>
+</body>
+</html>
